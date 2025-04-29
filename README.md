@@ -1,4 +1,4 @@
-# 📚 Avaliação DW3 - MiniDevBlog React + Firebase + Deploy
+# 📚 Avaliação DW3 - MiniDevBlog React + Firebase + Deploy [Nunca se Esqueça de Montar a Build Final do Deploy]
 
 ## 🏛️ Contextualização
 
