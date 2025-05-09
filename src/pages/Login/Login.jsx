@@ -1,14 +1,15 @@
 import styles from './Login.module.css'
 import { useEffect, useState } from 'react'
 import { useAuthentication } from '../../hooks/useAuthentication'
-
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
+    const navigate = useNavigate()
 
-    const { login, error: authError, loading } = useAuthentication()
+    const { login, loginWithGoogle, error: authError, loading } = useAuthentication()
 
     const handlerSubmit = async (e) => {
         e.preventDefault()
@@ -20,12 +21,20 @@ const Login = () => {
         }
 
         const res = await login(user)
+        if (res) {
+            navigate("/dashboard")
+        }
+    }
 
-        console.log(res)
+    const handleGoogleLogin = async () => {
+        setError("")
+        const res = await loginWithGoogle()
+        if (res) {
+            navigate("/dashboard")
+        }
     }
 
     useEffect(() => {
-        console.log(authError)
         if (authError) {
             setError(authError)
         }
@@ -58,9 +67,21 @@ const Login = () => {
                         value={password}
                     />
                 </label>
-                {!loading && <button className='btn'>Entrar</button>}
-                {loading && <button className='btn' disabled>Aguarde... </button>}
-                {error && <p>{error}</p>}
+                <div className={styles.buttons_container}>
+                    {!loading && <button className='btn'>Entrar</button>}
+                    {loading && <button className='btn' disabled>Aguarde... </button>}
+                
+                    <button 
+                        type="button" 
+                        className={`btn ${styles.google_btn}`} 
+                        onClick={handleGoogleLogin}
+                        disabled={loading}
+                    >
+                        Entrar com Google
+                    </button>
+                </div>
+                
+                {error && <p className="error">{error}</p>}
             </form>
         </div>
     )

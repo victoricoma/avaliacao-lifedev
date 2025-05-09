@@ -1,0 +1,22 @@
+.post_container {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.post_container h1 {
+  font-size: 2.2em;
+  margin-bottom: 0.5em;
+}
+
+.post_author {
+  color: #888;
+  margin-bottom: 2em;
+  font-style: italic;
+}
+
+.post_content {
+  text-align: left;
+  line-height: 1.6;
+}

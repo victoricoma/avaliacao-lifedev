@@ -2,9 +2,9 @@ name: "Injection Code React BOT icoma.com pipeline code review"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "avaliacaodw-HugoM1randa" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "avaliacaodw-HugoM1randa" ]
   schedule:
     - cron: '31 5 * * 5'
 
@@ -23,7 +23,7 @@ jobs:
       matrix:
         include:
         - language: javascript-typescript
-          build-mode: none
+          build-mode: autobuild
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
