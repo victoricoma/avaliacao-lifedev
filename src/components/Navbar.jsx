@@ -1,25 +1,101 @@
-import styles from './Navbar.module.css'
-import { NavLink } from "react-router-dom"
+import styles from './Navbar.module.css';
+import { NavLink } from "react-router-dom";
+import { useAuthContext } from '../hooks/useAuthContext';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase/config';
 
 const Navbar = () => {
-  return (
-    <>
-      <nav className={styles.navbar}>
-        <ul className={styles.links_list}>
-          <NavLink to="/" className={styles.brand} activeClassName={styles.active}>
-          <li><span>Life</span>Dev</li>
-          </NavLink>
-          <NavLink to="/login" className={styles.link} activeClassName={styles.active}>
-          <li>Login</li>
-          </NavLink>
-          <NavLink to="/register" className={styles.link} activeClassName={styles.active}>
-          <li>Register</li>
-          </NavLink>
-          <button className={styles.exit}>Exit</button>
-        </ul>
-      </nav>
-    </>
-  )
-}
+  const { user } = useAuthContext();
 
-export default Navbar
+  const handleLogout = () => {
+    signOut(auth);
+  };
+
+  return (
+    <nav className={styles.navbar}>
+      <ul className={styles.links_list}>
+        <li>
+          <NavLink 
+            to="/" 
+            className={({ isActive }) =>
+              `${styles.brand} ${isActive ? styles.active : ''}`
+            }
+          >
+            <span>Life</span>Dev
+          </NavLink>
+        </li>
+
+        {!user && (
+          <>
+            <li>
+              <NavLink 
+                to="/login" 
+                className={({ isActive }) =>
+                  `${styles.link} ${isActive ? styles.active : ''}`
+                }
+              >
+                Login
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/register" 
+                className={({ isActive }) =>
+                  `${styles.link} ${isActive ? styles.active : ''}`
+                }
+              >
+                Register
+              </NavLink>
+            </li>
+          </>
+        )}
+
+        {user && (
+          <>
+            <li>
+              <NavLink 
+                to="/dashboard" 
+                className={({ isActive }) =>
+                  `${styles.link} ${isActive ? styles.active : ''}`
+                }
+              >
+                Dashboard
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/post/new" 
+                className={({ isActive }) =>
+                  `${styles.link} ${isActive ? styles.active : ''}`
+                }
+              >
+                Criar Post
+              </NavLink>
+            </li>
+            <li>
+              <button onClick={handleLogout} className={styles.exit}>
+                Sair
+              </button>
+            </li>
+          </>
+        )}
+      </ul>
+
+      {user && (
+        <div className={styles.user_info}>
+          <span className={styles.greeting}>Olá, {user.displayName?.toLowerCase() || "usuário"}</span>
+          <img
+            src={
+              user.photoURL ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "Usuário")}&background=random&color=fff`
+            }
+            alt="Avatar"
+            className={styles.avatar}
+          />
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
