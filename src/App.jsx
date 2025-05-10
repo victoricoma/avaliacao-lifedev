@@ -1,30 +1,37 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Home from './pages/Home/Home'
-import Login from './pages/Login/Login'
-import Register from './pages/Register/Register'
-import './App.css'
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home/Home';
+import Login from './pages/Login/Login';
+import Register from "./pages/Register/Register";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import CreatePost from "./pages/CreatePost/CreatePost";
+import Navbar from './components/Navbar';
+import { useAuthContext } from './hooks/useAuthContext';
+import './App.css';
+import Post from './post/post';
 
-function App() {
+const App = () => {
+  const { user, authIsReady } = useAuthContext();
+
+  if (!authIsReady) {
+    return <p>Carregando autenticação...</p>;
+  }
 
   return (
-    <>
-      <div>
-        <BrowserRouter>
-        <Navbar />
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Routes>
-          </div>
-          <Footer />
-        </BrowserRouter>
-      </div>
-    </>
-  )
-}
+    <BrowserRouter>
+      <Navbar />
+      <div style={{ paddingTop: '80px' }}></div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+        <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+        <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/post/new" element={user ? <CreatePost /> : <Navigate to="/login" />} />
+        <Route path="/post/:id" element={user ? <Post /> : <Navigate to="/login" />} />
+      </Routes>
+      
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;
